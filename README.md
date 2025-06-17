@@ -1,6 +1,6 @@
 # Atividade - API de Autenticação e Gerenciamento de Usuários
 
-#Integrantes
+## Integrantes
   - Nathan Schiavon 230179292
   - Lucas Foppa 23213637-2
   - Isaac Arantes 23106516-2
