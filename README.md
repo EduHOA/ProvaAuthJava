@@ -156,6 +156,30 @@ Permite registro, login, edição de perfil, listagem e exclusão de usuários, 
 
 ---
 
+## Recursos Adicionais
+
+### Documentação Oficial
+
+- **[Documentação do Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/)**
+  - Guia completo de referência do Spring Boot
+  - Tutoriais, configurações e melhores práticas
+
+- **[Guia de Introdução ao JWT](https://jwt.io/introduction)**
+  - Conceitos fundamentais sobre JSON Web Tokens
+  - Estrutura, assinatura e uso de JWT
+
+- **[Spring Security Reference](https://docs.spring.io/spring-security/reference/)**
+  - Documentação oficial do Spring Security
+  - Configuração de autenticação e autorização
+
+### Links Úteis
+
+- **[Spring Boot Guides](https://spring.io/guides)**
+- **[Spring Security Samples](https://github.com/spring-projects/spring-security-samples)**
+- **[JWT Debugger](https://jwt.io/)**
+
+---
+
 ## Observações
 
 - Para uso em produção, configure um banco de dados real (MySQL/PostgreSQL) e altere as propriedades em `application.properties`.
