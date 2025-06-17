@@ -74,4 +74,76 @@ class AuthControllerTest {
                 .content(objectMapper.writeValueAsString(loginDto)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void testRegisterSuccess() throws Exception {
+        UserRegistrationDto registrationDto = new UserRegistrationDto();
+        registrationDto.setUsername("newuser");
+        registrationDto.setEmail("newuser@example.com");
+        registrationDto.setPassword("password123");
+
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registrationDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.token").exists())
+                .andExpect(jsonPath("$.username").value("newuser"))
+                .andExpect(jsonPath("$.role").value("ROLE_USER"));
+    }
+
+    @Test
+    void testRegisterUsernameAlreadyExists() throws Exception {
+        // Primeiro cadastro
+        UserRegistrationDto registrationDto = new UserRegistrationDto();
+        registrationDto.setUsername("duplicateuser");
+        registrationDto.setEmail("uniqueemail@example.com");
+        registrationDto.setPassword("password123");
+        userService.registerUser(registrationDto);
+
+        // Segundo cadastro com mesmo username
+        UserRegistrationDto duplicateDto = new UserRegistrationDto();
+        duplicateDto.setUsername("duplicateuser");
+        duplicateDto.setEmail("anotheremail@example.com");
+        duplicateDto.setPassword("password123");
+
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(duplicateDto)))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testRegisterEmailAlreadyExists() throws Exception {
+        // Primeiro cadastro
+        UserRegistrationDto registrationDto = new UserRegistrationDto();
+        registrationDto.setUsername("uniqueuser");
+        registrationDto.setEmail("duplicateemail@example.com");
+        registrationDto.setPassword("password123");
+        userService.registerUser(registrationDto);
+
+        // Segundo cadastro com mesmo email
+        UserRegistrationDto duplicateDto = new UserRegistrationDto();
+        duplicateDto.setUsername("anotheruser");
+        duplicateDto.setEmail("duplicateemail@example.com");
+        duplicateDto.setPassword("password123");
+
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(duplicateDto)))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testRegisterWithEmptyFields() throws Exception {
+        UserRegistrationDto registrationDto = new UserRegistrationDto();
+        registrationDto.setUsername("");
+        registrationDto.setEmail("");
+        registrationDto.setPassword("");
+
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registrationDto)))
+                .andExpect(status().isBadRequest());
+    }
 } 
