@@ -39,6 +39,8 @@ class UserControllerTest {
     private String adminToken;
     private Long userId;
     private Long adminId;
+    private String userUsername;
+    private String adminUsername;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -47,9 +49,9 @@ class UserControllerTest {
 
         // Gera sufixo único
         String unique = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
-        String userUsername = "user1_" + unique;
+        userUsername = "user1_" + unique;
         String userEmail = "user1_" + unique + "@email.com";
-        String adminUsername = "admin1_" + unique;
+        adminUsername = "admin1_" + unique;
         String adminEmail = "admin1_" + unique + "@email.com";
 
         // Cria usuário comum
@@ -99,10 +101,18 @@ class UserControllerTest {
 
     @Test
     void testGetUserProfile() throws Exception {
+        // Busca usuário persistido para depuração
+        Optional<User> userOpt = userRepository.findByUsername(userUsername);
+        System.out.println("[DEBUG] Username persistido: " + (userOpt.isPresent() ? userOpt.get().getUsername() : "NÃO ENCONTRADO"));
+        System.out.println("[DEBUG] Token usado: " + userToken);
+
         mockMvc.perform(get("/api/users/profile")
                 .header("Authorization", "Bearer " + userToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").exists());
+                .andExpect(jsonPath("$.username").value(userUsername))
+                .andExpect(jsonPath("$.email").exists())
+                .andExpect(jsonPath("$.role").exists())
+                .andExpect(jsonPath("$.id").exists());
     }
 
     @Test

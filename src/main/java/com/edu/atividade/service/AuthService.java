@@ -3,6 +3,7 @@ package com.edu.atividade.service;
 import com.edu.atividade.dto.JwtResponseDto;
 import com.edu.atividade.dto.UserLoginDto;
 import com.edu.atividade.dto.UserRegistrationDto;
+import com.edu.atividade.model.CustomUserDetails;
 import com.edu.atividade.model.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,8 +31,9 @@ public class AuthService {
             )
         );
 
-        User user = (User) authentication.getPrincipal();
-        String token = jwtService.generateToken(user);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
+        String token = jwtService.generateToken(userDetails);
 
         return new JwtResponseDto(token, user.getUsername(), user.getRole().name());
     }

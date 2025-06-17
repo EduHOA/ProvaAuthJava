@@ -2,14 +2,19 @@ package com.edu.atividade.controller;
 
 import com.edu.atividade.dto.UserRegistrationDto;
 import com.edu.atividade.model.User;
+import com.edu.atividade.model.CustomUserDetails;
 import com.edu.atividade.service.UserService;
+import com.edu.atividade.dto.UserProfileDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/users")
@@ -23,8 +28,10 @@ public class UserController {
 
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<User> getUserProfile(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserProfileDto> getUserProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
+        UserProfileDto dto = new UserProfileDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
+        return ResponseEntity.ok(dto);
     }
 
     @PutMapping("/profile")

@@ -3,6 +3,7 @@ package com.edu.atividade.service;
 import com.edu.atividade.dto.UserRegistrationDto;
 import com.edu.atividade.model.Role;
 import com.edu.atividade.model.User;
+import com.edu.atividade.model.CustomUserDetails;
 import com.edu.atividade.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,8 +28,9 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        return new CustomUserDetails(user);
     }
 
     @Transactional
@@ -109,5 +111,10 @@ public class UserService implements UserDetailsService {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
         userRepository.deleteById(id);
+    }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
     }
 } 
